@@ -1,0 +1,99 @@
+<!-- Вы разрабатываете веб-страницу для отображения расписания занятий в спортивном клубе. Каждое занятие имеет название, время проведения, максимальное количество участников и текущее количество записанных участников.
+
+1. Создайте веб-страницу с заголовком "Расписание занятий" и областью для отображения занятий.
+
+2. Загрузите информацию о занятиях из предоставленных JSON-данных. Каждое занятие должно отображаться на странице с указанием его названия, времени проведения, максимального количества участников и текущего количества записанных участников.
+
+3. Пользователь может нажать на кнопку "Записаться" для записи на занятие. Если максимальное количество участников уже достигнуто, кнопка "Записаться" становится неактивной.
+
+4. После успешной записи пользователя на занятие, обновите количество записанных участников и состояние кнопки "Записаться".
+
+5. Запись пользователя на занятие можно отменить путем нажатия на кнопку "Отменить запись". После отмены записи, обновите количество записанных участников и состояние кнопки.
+
+6. Все изменения (запись, отмена записи) должны сохраняться и отображаться в реальном времени на странице.
+
+7. При разработке используйте Bootstrap для стилизации элементов. -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расписание занятий</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .lesson {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h1 class="text-center">Расписание занятий</h1>
+    <div id="schedule" class="mt-4"></div>
+</div>
+
+<script>
+    const lessons = [
+        {
+            "title": "Йога",
+            "time": "09:00 - 10:00",
+            "maxParticipants": 10,
+            "currentParticipants": 5
+        },
+        {
+            "title": "Тренировка по боксу",
+            "time": "10:30 - 11:30",
+            "maxParticipants": 20,
+            "currentParticipants": 20
+        },
+        {
+            "title": "Занятие по пилатесу",
+            "time": "12:00 - 13:00",
+            "maxParticipants": 15,
+            "currentParticipants": 10
+        }
+    ];
+
+    function renderSchedule() {
+        const scheduleDiv = document.getElementById("schedule");
+        scheduleDiv.innerHTML = ''; // Очистка существующих данных
+        lessons.forEach((lesson, index) => {
+            const lessonDiv = document.createElement('div');
+            lessonDiv.className = 'lesson';
+            lessonDiv.innerHTML = `
+                <h5>${lesson.title}</h5>
+                <p>Время: ${lesson.time}</p>
+                <p>Макс. участников: ${lesson.maxParticipants}</p>
+                <p>Текущие участники: ${lesson.currentParticipants}</p>
+                <button class="btn btn-primary" ${lesson.currentParticipants >= lesson.maxParticipants ? 'disabled' : ''} onclick="register(${index})">Записаться</button>
+                <button class="btn btn-danger" ${lesson.currentParticipants === 0 ? 'disabled' : ''} onclick="unregister(${index})">Отменить запись</button>
+            `;
+            scheduleDiv.appendChild(lessonDiv);
+        });
+    }
+
+    function register(index) {
+        if (lessons[index].currentParticipants < lessons[index].maxParticipants) {
+            lessons[index].currentParticipants++;
+            renderSchedule();
+        }
+    }
+
+    function unregister(index) {
+        if (lessons[index].currentParticipants > 0) {
+            lessons[index].currentParticipants--;
+            renderSchedule();
+        }
+    }
+
+    // Инициализация расписания
+    renderSchedule();
+</script>
+
+</body>
+</html>
