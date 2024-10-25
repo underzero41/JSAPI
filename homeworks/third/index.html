@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Случайное изображение из Unsplash</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        img {
+            max-width: 90%;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .like-count {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Случайное изображение из Unsplash</h1>
+<img id="randomImage" alt="Случайное изображение">
+<p id="photographerName"></p>
+<button id="likeButton">Лайк</button>
+<p class="like-count">Количество лайков: <span id="likeCounter">0</span></p>
+
+<script>
+    const API_URL = 'https://api.unsplash.com/photos/random';
+    const ACCESS_KEY = 'a_Z26vPrutxEhiVhH1F88FXewCW6_oQgyZIgZw2f7Eg'; // Ваш Access Key
+    const imageElement = document.getElementById('randomImage');
+    const photographerNameElement = document.getElementById('photographerName');
+    const likeButton = document.getElementById('likeButton');
+    const likeCounterElement = document.getElementById('likeCounter');
+
+    // Инициализация счетчика лайков
+    let likeCount = 0;
+
+    // Функция получения случайного изображения
+    async function fetchRandomImage() {
+        try {
+            const response = await fetch(`${API_URL}?client_id=${ACCESS_KEY}`);
+            if (!response.ok) {
+                throw new Error('Ошибка при получении изображения');
+            }
+            const data = await response.json();
+            imageElement.src = data.urls.regular;
+            photographerNameElement.textContent = `Фото: ${data.user.name}`;
+        } catch (error) {
+            console.error(error);
+            photographerNameElement.textContent = 'Не удалось загрузить изображение.';
+        }
+    }
+
+    // Обработчик нажатия на кнопку "Лайк"
+    likeButton.addEventListener('click', () => {
+        likeCount++;
+        likeCounterElement.textContent = likeCount;
+    });
+
+    // Загрузка изображения при загрузке страницы
+    window.onload = fetchRandomImage;
+</script>
+
+</body>
+</html>
